@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies", "Kaleido.Modules.Services.Grpc.Currencies\Kaleido.Modules.Services.Grpc.Currencies.csproj", "{47BD3BD4-CAEF-4978-ADCC-0D6FA3663182}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Client", "Kaleido.Modules.Services.Grpc.Currencies.Client\Kaleido.Modules.Services.Grpc.Currencies.Client.csproj", "{6D5E4236-A67A-4FEF-A29A-B8C2B95841D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Migrations", "Kaleido.Modules.Services.Grpc.Currencies.Migrations\Kaleido.Modules.Services.Grpc.Currencies.Migrations.csproj", "{EE8EF93A-587E-45E5-9A44-4D800936DBE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Tests.Common", "Kaleido.Modules.Services.Grpc.Currencies.Tests.Common\Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.csproj", "{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations", "Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations\Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations.csproj", "{EF73E923-5C28-4049-9517-78022E6AAEDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit", "Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit\Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.csproj", "{4CCEA6E4-2357-4E86-9884-94782A33CA8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47BD3BD4-CAEF-4978-ADCC-0D6FA3663182}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47BD3BD4-CAEF-4978-ADCC-0D6FA3663182}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47BD3BD4-CAEF-4978-ADCC-0D6FA3663182}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47BD3BD4-CAEF-4978-ADCC-0D6FA3663182}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D5E4236-A67A-4FEF-A29A-B8C2B95841D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D5E4236-A67A-4FEF-A29A-B8C2B95841D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D5E4236-A67A-4FEF-A29A-B8C2B95841D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D5E4236-A67A-4FEF-A29A-B8C2B95841D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE8EF93A-587E-45E5-9A44-4D800936DBE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE8EF93A-587E-45E5-9A44-4D800936DBE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE8EF93A-587E-45E5-9A44-4D800936DBE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE8EF93A-587E-45E5-9A44-4D800936DBE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF73E923-5C28-4049-9517-78022E6AAEDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF73E923-5C28-4049-9517-78022E6AAEDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF73E923-5C28-4049-9517-78022E6AAEDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF73E923-5C28-4049-9517-78022E6AAEDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CCEA6E4-2357-4E86-9884-94782A33CA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CCEA6E4-2357-4E86-9884-94782A33CA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CCEA6E4-2357-4E86-9884-94782A33CA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CCEA6E4-2357-4E86-9884-94782A33CA8A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

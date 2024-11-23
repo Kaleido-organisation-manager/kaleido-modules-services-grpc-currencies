@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package Kaleido.Grpc.Currencies;
+
+import "google/protobuf/timestamp.proto";
+  
+message Currency {
+    string name = 1;
+    string code = 2;
+    optional string symbol = 3;
+}
+
+message CurrencyRequest {
+    string key = 1;
+}
+
+message CurrencyActionRequest {
+    string key = 1;
+    Currency currency = 2;
+}
+
+message EmptyRequest {}
+
+message CurrencyRevision {
+    string key = 1;
+    int32 revision = 2;
+    string action = 3;
+    google.protobuf.Timestamp createdAt = 4;
+    string status = 5;
+}
+
+message CurrencyResponse {
+    string key = 1;
+    Currency currency = 2;
+    CurrencyRevision revision = 3;
+}
+
+message CurrencyListResponse {
+    repeated CurrencyResponse currencies = 1;
+}
+
+message GetAllCurrenciesFilteredRequest {
+    string name = 1;
+}
+
+message GetCurrencyRevisionRequest {
+  string key = 1;
+  google.protobuf.Timestamp createdAt = 2;
+}
+

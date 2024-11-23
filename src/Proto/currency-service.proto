@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package Kaleido.Grpc.Currencies;
+
+import "models.proto";
+
+service GrpcCurrencies {
+    rpc GetCurrency(CurrencyRequest) returns (CurrencyResponse);
+    rpc GetAllCurrencies(EmptyRequest) returns (CurrencyListResponse);
+    rpc CreateCurrency(Currency) returns (CurrencyResponse);
+    rpc UpdateCurrency(CurrencyActionRequest) returns (CurrencyResponse);
+    rpc DeleteCurrency(CurrencyRequest) returns (CurrencyResponse);
+    rpc GetCurrencyRevision(GetCurrencyRevisionRequest) returns (CurrencyResponse);
+    rpc GetAllCurrencyRevisions(CurrencyRequest) returns (CurrencyListResponse);
+    rpc GetAllCurrenciesFiltered(GetAllCurrenciesFilteredRequest) returns (CurrencyListResponse);
+}
+
