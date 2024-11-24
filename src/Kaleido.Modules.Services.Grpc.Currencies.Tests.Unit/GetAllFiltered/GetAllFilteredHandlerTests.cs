@@ -22,17 +22,26 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAllFiltered
         {
             _mocker = new AutoMocker();
 
-            var currencies = new List<EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>>
+            var currencies = new List<EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>>
             {
-                new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+                new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
                 {
                     Entity = new CurrencyEntityBuilder().Build(),
                     Revision = new CurrencyRevisionBuilder().WithKey(Guid.NewGuid()).Build()
                 },
-                new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+                new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
                 {
                     Entity = new CurrencyEntityBuilder().WithName("Dollar").WithCode("USD").WithSymbol("$").Build(),
                     Revision = new CurrencyRevisionBuilder().WithKey(Guid.NewGuid()).Build()
+                }
+            };
+
+            var denominations = new List<EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>>
+            {
+                new EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>
+                {
+                    Entity = new DenominationEntityBuilder().Build(),
+                    Revision = new DenominationRevisionBuilder().Build()
                 }
             };
 
@@ -47,8 +56,8 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAllFiltered
             _mocker.Use(mapper.CreateMapper());
 
             _mocker.GetMock<IGetAllFilteredManager>()
-                .Setup(m => m.GetAllByNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(currencies.Select(c => ManagerResponse.Success(c)));
+                .Setup(m => m.GetAllFilteredAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(currencies.Select(c => ManagerResponse.Success(c, denominations)));
 
             _sut = _mocker.CreateInstance<GetAllFilteredHandler>();
         }
@@ -79,7 +88,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAllFiltered
 
             // Assert
             _mocker.GetMock<IGetAllFilteredManager>()
-                .Verify(m => m.GetAllByNameAsync(validRequest.Name, It.IsAny<CancellationToken>()), Times.Once);
+                .Verify(m => m.GetAllFilteredAsync(validRequest.Name, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -100,7 +109,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAllFiltered
             var validRequest = new GetAllCurrenciesFilteredRequestBuilder().Build();
 
             _mocker.GetMock<IGetAllFilteredManager>()
-                .Setup(m => m.GetAllByNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.GetAllFilteredAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             // Act & Assert

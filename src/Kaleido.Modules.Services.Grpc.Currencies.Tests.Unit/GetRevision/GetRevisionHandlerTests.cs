@@ -22,10 +22,19 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetRevision
             _mocker = new AutoMocker();
 
             var key = Guid.NewGuid();
-            var validRevision = new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+            var validRevision = new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
             {
                 Entity = new CurrencyEntityBuilder().Build(),
                 Revision = new CurrencyRevisionBuilder().WithKey(key).WithRevision(1).Build()
+            };
+
+            var denominations = new List<EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>>()
+            {
+                new EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>
+                {
+                    Entity = new DenominationEntityBuilder().Build(),
+                    Revision = new DenominationRevisionBuilder().WithKey(key).WithRevision(1).Build()
+                }
             };
 
             // Happy path setup
@@ -43,7 +52,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetRevision
                 {
                     validRevision.Revision.CreatedAt = createdAt;
                     validRevision.Revision.Key = key;
-                    return ManagerResponse.Success(validRevision);
+                    return ManagerResponse.Success(validRevision, denominations);
                 }
 
                 );

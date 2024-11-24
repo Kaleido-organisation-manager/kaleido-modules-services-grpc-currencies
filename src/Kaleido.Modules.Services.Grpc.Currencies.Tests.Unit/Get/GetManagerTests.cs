@@ -6,6 +6,7 @@ using Kaleido.Common.Services.Grpc.Models;
 using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Constants;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Models;
+using System.Linq.Expressions;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
 {
@@ -17,21 +18,39 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
         public GetManagerTests()
         {
             _mocker = new AutoMocker();
-            _sut = _mocker.CreateInstance<GetManager>();
 
-            var currencyEntity = new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+            var currencyEntity = new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
             {
                 Entity = new CurrencyEntityBuilder().Build(),
                 Revision = new CurrencyRevisionBuilder().Build()
             };
 
-            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
+            var denominationList = new List<EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>>()
+            {
+                new EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>
+                {
+                    Entity = new DenominationEntityBuilder().Build(),
+                    Revision = new DenominationRevisionBuilder().Build()
+                }
+            };
+
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
                 .Setup(r => r.GetAsync(It.IsAny<Guid>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Guid key, int? revision, CancellationToken cancellationToken) =>
                 {
                     currencyEntity.Revision.Key = key;
                     return currencyEntity;
                 });
+
+            _mocker.GetMock<IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity>>()
+                .Setup(r => r.FindAllAsync(
+                    It.IsAny<Expression<Func<DenominationEntity, bool>>>(),
+                    It.IsAny<Expression<Func<DenominationRevisionEntity, bool>>>(),
+                    It.IsAny<Guid?>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(denominationList);
+
+            _sut = _mocker.CreateInstance<GetManager>();
         }
 
         [Fact]
@@ -41,10 +60,10 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
             var key = Guid.NewGuid();
 
             // Act
-            await _sut.GetAsync(key.ToString());
+            await _sut.GetAsync(key);
 
             // Assert
-            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
                 .Verify(r => r.GetAsync(key, It.IsAny<int?>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -55,7 +74,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
             var key = Guid.NewGuid();
 
             // Act
-            var result = await _sut.GetAsync(key.ToString());
+            var result = await _sut.GetAsync(key);
 
             // Assert
             Assert.NotNull(result.Currency);
@@ -67,12 +86,12 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
         {
             // Arrange
             var key = Guid.NewGuid();
-            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
                 .Setup(r => r.GetAsync(key, It.IsAny<int?>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>)null!);
+                .ReturnsAsync((EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>)null!);
 
             // Act
-            var result = await _sut.GetAsync(key.ToString());
+            var result = await _sut.GetAsync(key);
 
             // Assert
             Assert.Null(result.Currency);
@@ -87,10 +106,10 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
             var cancellationToken = new CancellationToken();
 
             // Act
-            await _sut.GetAsync(key.ToString(), cancellationToken);
+            await _sut.GetAsync(key, cancellationToken);
 
             // Assert
-            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
                 .Verify(r => r.GetAsync(key, It.IsAny<int?>(), cancellationToken), Times.Once);
         }
 
@@ -101,11 +120,44 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
             var key = Guid.NewGuid();
 
             // Act
-            await _sut.GetAsync(key.ToString());
+            await _sut.GetAsync(key);
 
             // Assert
-            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
                 .Verify(r => r.GetAsync(key, It.IsAny<int?>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAsync_ShouldReturnDenominations()
+        {
+            // Arrange
+            var key = Guid.NewGuid();
+
+            // Act
+            var result = await _sut.GetAsync(key);
+
+            // Assert
+            Assert.NotNull(result.Denominations);
+            Assert.NotEmpty(result.Denominations);
+        }
+
+        [Fact]
+        public async Task GetAsync_ShouldCallFindAllAsync()
+        {
+            // Arrange
+            var key = Guid.NewGuid();
+
+            // Act
+            await _sut.GetAsync(key);
+
+            // Assert
+            _mocker.GetMock<IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity>>()
+                .Verify(r => r.FindAllAsync(
+                    It.IsAny<Expression<Func<DenominationEntity, bool>>>(),
+                    It.IsAny<Expression<Func<DenominationRevisionEntity, bool>>>(),
+                    It.IsAny<Guid?>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }

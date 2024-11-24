@@ -31,13 +31,16 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Create
             _mocker.Use(mapper.CreateMapper());
 
             _mocker.GetMock<ICreateManager>()
-                .Setup(m => m.CreateAsync(It.IsAny<CurrencyEntity>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.CreateAsync(It.IsAny<CurrencyEntity>(), It.IsAny<IEnumerable<DenominationEntity>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
-                    ManagerResponse.Success(new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
-                    {
-                        Entity = new CurrencyEntityBuilder().Build(),
-                        Revision = new BaseRevisionEntity()
-                    })
+                    ManagerResponse.Success(
+                        new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
+                        {
+                            Entity = new CurrencyEntityBuilder().Build(),
+                            Revision = new CurrencyRevisionEntity()
+                        },
+                        new List<EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>>()
+                    )
                 );
 
             _sut = _mocker.CreateInstance<CreateHandler>();
@@ -69,7 +72,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Create
             // Assert
 
             _mocker.GetMock<ICreateManager>()
-                .Verify(m => m.CreateAsync(It.IsAny<CurrencyEntity>(), It.IsAny<CancellationToken>()), Times.Once);
+                .Verify(m => m.CreateAsync(It.IsAny<CurrencyEntity>(), It.IsAny<IEnumerable<DenominationEntity>>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -90,7 +93,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Create
             var validRequest = new CurrencyBuilder().Build();
 
             _mocker.GetMock<ICreateManager>()
-                .Setup(m => m.CreateAsync(It.IsAny<CurrencyEntity>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.CreateAsync(It.IsAny<CurrencyEntity>(), It.IsAny<IEnumerable<DenominationEntity>>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             // Act & Assert

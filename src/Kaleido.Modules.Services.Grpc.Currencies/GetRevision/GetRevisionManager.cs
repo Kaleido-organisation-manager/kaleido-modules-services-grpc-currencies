@@ -6,29 +6,36 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.GetRevision;
 
 public class GetRevisionManager : IGetRevisionManager
 {
-    private readonly IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity> _lifeCycleHandler;
+    private readonly IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity> _lifeCycleHandler;
+    private readonly IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity> _denominationLifeCycleHandler;
     private readonly ILogger<GetRevisionManager> _logger;
 
     public GetRevisionManager(
-        IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity> lifecycleHandler,
+        IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity> lifecycleHandler,
+        IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity> denominationLifecycleHandler,
         ILogger<GetRevisionManager> logger
     )
     {
         _lifeCycleHandler = lifecycleHandler;
+        _denominationLifeCycleHandler = denominationLifecycleHandler;
         _logger = logger;
     }
 
     public async Task<ManagerResponse> GetRevisionAsync(Guid key, DateTime createdAt, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Getting revision for currency with key: {Key} at {CreatedAt}", key, createdAt);
-
         var currencyRevision = await _lifeCycleHandler.GetHistoricAsync(key, createdAt, cancellationToken);
 
-        if (currencyRevision is null)
+        if (currencyRevision == null)
         {
             return ManagerResponse.NotFound();
         }
 
-        return ManagerResponse.Success(currencyRevision);
+        var revisionTimestamp = currencyRevision.Revision.CreatedAt;
+        var denominations = await _denominationLifeCycleHandler.FindAllAsync(
+            denomination => denomination.CurrencyKey == key,
+            r => r.CreatedAt == revisionTimestamp,
+            cancellationToken: cancellationToken);
+
+        return ManagerResponse.Success(currencyRevision, denominations);
     }
 }

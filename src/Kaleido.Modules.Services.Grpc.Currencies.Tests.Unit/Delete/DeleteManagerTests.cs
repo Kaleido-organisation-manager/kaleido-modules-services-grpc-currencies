@@ -10,6 +10,7 @@ using Grpc.Core;
 using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Constants;
 using Kaleido.Common.Services.Grpc.Exceptions;
+using System.Linq.Expressions;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
 {
@@ -23,10 +24,24 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
             _mocker = new AutoMocker();
             _sut = _mocker.CreateInstance<DeleteManager>();
 
-            var currencyEntity = new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+            var currencyEntity = new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
             {
                 Entity = new CurrencyEntityBuilder().Build(),
                 Revision = new CurrencyRevisionBuilder().WithKey(Guid.NewGuid()).Build()
+            };
+
+            var denominationList = new List<EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>>()
+            {
+                new EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>
+                {
+                    Entity = new DenominationEntityBuilder().WithValue(2).WithCurrencyKey(currencyEntity.Key).Build(),
+                    Revision = new DenominationRevisionBuilder().WithKey(Guid.NewGuid()).Build()
+                },
+                new EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>
+                {
+                    Entity = new DenominationEntityBuilder().WithValue(1).WithCurrencyKey(currencyEntity.Key).Build(),
+                    Revision = new DenominationRevisionBuilder().WithKey(Guid.NewGuid()).Build()
+                }
             };
 
             _mocker.Use(() =>
@@ -38,9 +53,25 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
                 return mapper.CreateMapper();
             });
 
-            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
-                .Setup(r => r.DeleteAsync(It.IsAny<Guid>(), It.IsAny<BaseRevisionEntity>(), It.IsAny<CancellationToken>()))
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
+                .Setup(r => r.GetAsync(It.IsAny<Guid>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(currencyEntity);
+
+            _mocker.GetMock<IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity>>()
+                .Setup(r => r.FindAllAsync(
+                    It.IsAny<Expression<Func<DenominationEntity, bool>>>(),
+                    It.IsAny<Expression<Func<DenominationRevisionEntity, bool>>>(),
+                    It.IsAny<Guid?>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(denominationList);
+
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
+                .Setup(r => r.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CurrencyRevisionEntity>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(currencyEntity);
+
+            _mocker.GetMock<IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity>>()
+                .Setup(r => r.DeleteAsync(It.IsAny<Guid>(), It.IsAny<DenominationRevisionEntity>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Guid key, DenominationRevisionEntity revision, CancellationToken ct) => denominationList.First(d => d.Key == key));
         }
 
         [Fact]
@@ -50,11 +81,11 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
             var key = Guid.NewGuid();
 
             // Act
-            await _sut.DeleteAsync(key.ToString());
+            await _sut.DeleteAsync(key);
 
             // Assert
-            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
-                .Verify(r => r.DeleteAsync(key, It.IsAny<BaseRevisionEntity>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
+                .Verify(r => r.DeleteAsync(key, It.IsAny<CurrencyRevisionEntity>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -64,7 +95,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
             var key = Guid.NewGuid();
 
             // Act
-            var result = await _sut.DeleteAsync(key.ToString());
+            var result = await _sut.DeleteAsync(key);
 
             // Assert
             Assert.NotNull(result.Currency);
@@ -76,12 +107,12 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
         {
             // Arrange
             var key = Guid.NewGuid();
-            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
-                .Setup(r => r.DeleteAsync(key, It.IsAny<BaseRevisionEntity>(), It.IsAny<CancellationToken>()))
+            _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
+                .Setup(r => r.GetAsync(key, It.IsAny<int?>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new RevisionNotFoundException("Revision not found"));
 
             // Act
-            var result = await _sut.DeleteAsync(key.ToString());
+            var result = await _sut.DeleteAsync(key);
 
             // Assert
             Assert.Null(result.Currency);

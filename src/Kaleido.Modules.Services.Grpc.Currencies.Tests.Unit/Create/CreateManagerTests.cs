@@ -31,10 +31,10 @@ public class CreateManagerTests
             return mapper.CreateMapper();
         });
 
-        _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
-            .Setup(r => r.CreateAsync(currencyEntity, It.IsAny<BaseRevisionEntity?>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CurrencyEntity c, BaseRevisionEntity? r, CancellationToken ct) =>
-            new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+        _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
+            .Setup(r => r.CreateAsync(currencyEntity, It.IsAny<CurrencyRevisionEntity?>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((CurrencyEntity c, CurrencyRevisionEntity? r, CancellationToken ct) =>
+            new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
             {
                 Entity = c,
                 Revision = r ?? new CurrencyRevisionBuilder().Build()
@@ -46,15 +46,46 @@ public class CreateManagerTests
     {
         // Arrange
         var currencyEntity = new CurrencyEntityBuilder().Build();
+        var denominations = new List<DenominationEntity>()
+        {
+            new DenominationEntityBuilder().Build()
+        };
 
         // Act
-        await _sut.CreateAsync(currencyEntity);
+        await _sut.CreateAsync(currencyEntity, denominations, CancellationToken.None);
 
         // Assert
-        _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
-            .Verify(r => r.CreateAsync(currencyEntity, It.IsAny<BaseRevisionEntity>(), It.IsAny<CancellationToken>()), Times.Once);
+        _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
+            .Verify(r => r.CreateAsync(currencyEntity, It.IsAny<CurrencyRevisionEntity>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    [Fact]
+    public async Task CreateAsync_ShouldCallRepositoryCreateAsyncForDenominations()
+    {
+        // Arrange
+        var currencyEntity = new CurrencyEntityBuilder().Build();
+        var denominations = new List<DenominationEntity>()
+        {
+            new DenominationEntityBuilder().WithValue(100).Build(),
+            new DenominationEntityBuilder().WithValue(50).Build(),
+            new DenominationEntityBuilder().WithValue(20).Build(),
+            new DenominationEntityBuilder().WithValue(10).Build(),
+            new DenominationEntityBuilder().WithValue(5).Build(),
+            new DenominationEntityBuilder().WithValue(1).Build(),
+            new DenominationEntityBuilder().WithValue(0.5M).Build(),
+            new DenominationEntityBuilder().WithValue(0.2M).Build(),
+            new DenominationEntityBuilder().WithValue(0.1M).Build(),
+            new DenominationEntityBuilder().WithValue(0.05M).Build(),
+            new DenominationEntityBuilder().WithValue(0.01M).Build()
+        };
+
+        // Act
+        await _sut.CreateAsync(currencyEntity, denominations, CancellationToken.None);
+
+        // Assert
+        _mocker.GetMock<IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity>>()
+            .Verify(r => r.CreateAsync(It.IsAny<DenominationEntity>(), It.IsAny<DenominationRevisionEntity>(), It.IsAny<CancellationToken>()), Times.Exactly(denominations.Count));
+    }
 
     [Fact]
     public async Task CreateAsync_ShouldPassCancellationTokenToRepository()
@@ -62,11 +93,15 @@ public class CreateManagerTests
         // Arrange
         var cancellationToken = new CancellationToken();
         var currencyEntity = new CurrencyEntityBuilder().Build();
+        var denominations = new List<DenominationEntity>()
+        {
+            new DenominationEntityBuilder().Build()
+        };
         // Act
-        await _sut.CreateAsync(currencyEntity, cancellationToken);
+        await _sut.CreateAsync(currencyEntity, denominations, cancellationToken);
 
         // Assert
-        _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity>>()
-            .Verify(r => r.CreateAsync(currencyEntity, It.IsAny<BaseRevisionEntity>(), cancellationToken), Times.Once);
+        _mocker.GetMock<IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity>>()
+            .Verify(r => r.CreateAsync(currencyEntity, It.IsAny<CurrencyRevisionEntity>(), cancellationToken), Times.Once);
     }
 }

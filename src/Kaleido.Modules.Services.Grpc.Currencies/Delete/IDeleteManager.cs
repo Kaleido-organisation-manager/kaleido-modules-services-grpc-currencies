@@ -6,5 +6,5 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Delete;
 
 public interface IDeleteManager
 {
-    Task<ManagerResponse> DeleteAsync(string key, CancellationToken cancellationToken = default);
+    Task<ManagerResponse> DeleteAsync(Guid key, CancellationToken cancellationToken = default);
 }

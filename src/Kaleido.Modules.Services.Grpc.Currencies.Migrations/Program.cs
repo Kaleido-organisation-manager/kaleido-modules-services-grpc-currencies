@@ -25,8 +25,9 @@ builder.ConfigureServices((hostContext, services) =>
     }
     var assemblyName = "Kaleido.Modules.Services.Grpc.Currencies.Migrations";
     services.AddKaleidoMigrationEntityDbContext<CurrencyEntity, CurrencyEntityDbContext>(connectionString, assemblyName);
-    services.AddKaleidoMigrationRevisionDbContext<BaseRevisionEntity, CurrencyEntityRevisionDbContext>(connectionString, assemblyName);
-
+    services.AddKaleidoMigrationRevisionDbContext<CurrencyRevisionEntity, CurrencyEntityRevisionDbContext>(connectionString, assemblyName);
+    services.AddKaleidoMigrationEntityDbContext<DenominationEntity, DenominationEntityDbContext>(connectionString, assemblyName);
+    services.AddKaleidoMigrationRevisionDbContext<DenominationRevisionEntity, DenominationEntityRevisionDbContext>(connectionString, assemblyName);
 });
 
 var host = builder.Build();
@@ -37,9 +38,13 @@ using (var scope = host.Services.CreateScope())
 
     var entityContext = services.GetRequiredService<CurrencyEntityDbContext>();
     var revisionContext = services.GetRequiredService<CurrencyEntityRevisionDbContext>();
+    var denominationEntityContext = services.GetRequiredService<DenominationEntityDbContext>();
+    var denominationRevisionContext = services.GetRequiredService<DenominationEntityRevisionDbContext>();
 
     await entityContext.Database.MigrateAsync();
     await revisionContext.Database.MigrateAsync();
+    await denominationEntityContext.Database.MigrateAsync();
+    await denominationRevisionContext.Database.MigrateAsync();
 
     Console.WriteLine("Migration completed successfully.");
 }

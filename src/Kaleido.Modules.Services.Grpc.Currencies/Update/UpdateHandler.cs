@@ -42,7 +42,8 @@ public class UpdateHandler : IUpdateHandler
             await _keyValidator.ValidateAndThrowAsync(request.Key, cancellationToken);
             await _currencyValidator.ValidateAndThrowAsync(request.Currency, cancellationToken);
             var currency = _mapper.Map<CurrencyEntity>(request.Currency);
-            updateResult = await _updateManager.UpdateAsync(Guid.Parse(request.Key), currency, cancellationToken);
+            var denominations = _mapper.Map<IEnumerable<DenominationEntity>>(request.Currency.Denominations);
+            updateResult = await _updateManager.UpdateAsync(Guid.Parse(request.Key), currency, denominations, cancellationToken);
         }
         catch (ValidationException ex)
         {
@@ -60,6 +61,6 @@ public class UpdateHandler : IUpdateHandler
             throw new RpcException(new Status(StatusCode.NotFound, $"Currency with key {request.Key} not found"));
         }
 
-        return _mapper.Map<CurrencyResponse>(updateResult.Currency);
+        return updateResult.ToCurrencyResponse(_mapper);
     }
 }

@@ -6,5 +6,5 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Update;
 
 public interface IUpdateManager
 {
-    Task<ManagerResponse> UpdateAsync(Guid key, CurrencyEntity currency, CancellationToken cancellationToken = default);
+    Task<ManagerResponse> UpdateAsync(Guid key, CurrencyEntity currency, IEnumerable<DenominationEntity> denominations, CancellationToken cancellationToken = default);
 }

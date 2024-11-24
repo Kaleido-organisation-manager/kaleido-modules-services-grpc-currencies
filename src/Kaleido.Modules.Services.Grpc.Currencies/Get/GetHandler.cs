@@ -38,7 +38,8 @@ public class GetHandler : IGetHandler
         try
         {
             await _validator.ValidateAndThrowAsync(request.Key, cancellationToken);
-            result = await _manager.GetAsync(request.Key, cancellationToken);
+            var key = Guid.Parse(request.Key);
+            result = await _manager.GetAsync(key, cancellationToken);
         }
         catch (ValidationException ex)
         {
@@ -57,6 +58,6 @@ public class GetHandler : IGetHandler
             throw new RpcException(new Status(StatusCode.NotFound, "Category not found"));
         }
 
-        return _mapper.Map<CurrencyResponse>(result.Currency);
+        return result.ToCurrencyResponse(_mapper);
     }
 }

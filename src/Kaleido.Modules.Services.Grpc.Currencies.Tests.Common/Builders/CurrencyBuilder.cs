@@ -10,6 +10,10 @@ public class CurrencyBuilder
         Code = "EUR",
         Name = "Euro",
         Symbol = "€",
+        Denominations = { new List<Denomination> {
+                new DenominationBuilder().Build(),
+            },
+        },
     };
 
     public CurrencyBuilder WithName(string name)
@@ -35,6 +39,13 @@ public class CurrencyBuilder
         _currency.Name = entity.Name;
         _currency.Code = entity.Code;
         _currency.Symbol = entity.Symbol;
+        return this;
+    }
+
+    public CurrencyBuilder WithDenominations(List<Denomination> denominations)
+    {
+        _currency.Denominations.Clear();
+        _currency.Denominations.AddRange(denominations);
         return this;
     }
 

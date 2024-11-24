@@ -33,8 +33,8 @@ public class GetAllFilteredHandler : IGetAllFilteredHandler
         try
         {
             _validator.ValidateAndThrow(request.Name);
-            var currencies = await _manager.GetAllByNameAsync(request.Name, cancellationToken);
-            return _mapper.Map<CurrencyListResponse>(currencies.Select(c => c.Currency));
+            var result = await _manager.GetAllFilteredAsync(request.Name, cancellationToken);
+            return _mapper.Map<CurrencyListResponse>(result.Select(r => r.ToCurrencyResponse(_mapper)));
         }
         catch (ValidationException ex)
         {

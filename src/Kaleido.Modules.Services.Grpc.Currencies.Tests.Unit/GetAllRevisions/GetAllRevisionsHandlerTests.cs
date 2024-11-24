@@ -25,17 +25,26 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAllRevisions
 
             var revisionKey = Guid.NewGuid();
 
-            var validRevisions = new List<EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>>
+            var validRevisions = new List<EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>>
             {
-                new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+                new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
                 {
                     Entity = new CurrencyEntityBuilder().Build(),
                     Revision = new CurrencyRevisionBuilder().WithKey(revisionKey).WithRevision(1).Build()
                 },
-                new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+                new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
                 {
                     Entity = new CurrencyEntityBuilder().Build(),
                     Revision = new CurrencyRevisionBuilder().WithKey(revisionKey).WithRevision(2).Build()
+                }
+            };
+
+            var denominations = new List<EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>>()
+            {
+                new EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>
+                {
+                    Entity = new DenominationEntityBuilder().Build(),
+                    Revision = new DenominationRevisionBuilder().Build()
                 }
             };
 
@@ -50,7 +59,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAllRevisions
 
             _mocker.GetMock<IGetAllRevisionsManager>()
                 .Setup(m => m.GetAllRevisionsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(validRevisions.Select(r => ManagerResponse.Success(r)));
+                .ReturnsAsync(validRevisions.Select(r => ManagerResponse.Success(r, denominations)));
 
             _sut = _mocker.CreateInstance<GetAllRevisionsHandler>();
         }

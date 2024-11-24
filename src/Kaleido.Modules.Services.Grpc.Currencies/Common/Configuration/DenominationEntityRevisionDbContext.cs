@@ -1,16 +1,15 @@
 using Kaleido.Common.Services.Grpc.Configuration.Constants;
 using Kaleido.Common.Services.Grpc.Configuration.Interfaces;
-using Kaleido.Common.Services.Grpc.Models;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Common.Configuration;
 
-public class CurrencyEntityRevisionDbContext : DbContext, IKaleidoDbContext<CurrencyRevisionEntity>
+public class DenominationEntityRevisionDbContext : DbContext, IKaleidoDbContext<DenominationRevisionEntity>
 {
-    public DbSet<CurrencyRevisionEntity> Items { get; set; } = null!;
+    public DbSet<DenominationRevisionEntity> Items { get; set; } = null!;
 
-    public CurrencyEntityRevisionDbContext(DbContextOptions<CurrencyEntityRevisionDbContext> options)
+    public DenominationEntityRevisionDbContext(DbContextOptions<DenominationEntityRevisionDbContext> options)
     : base(options)
     { }
 
@@ -18,9 +17,9 @@ public class CurrencyEntityRevisionDbContext : DbContext, IKaleidoDbContext<Curr
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<BaseRevisionEntity>(entity =>
+        modelBuilder.Entity<DenominationRevisionEntity>(entity =>
         {
-            entity.ToTable("CurrencyRevisions");
+            entity.ToTable("Denominations");
             DefaultOnModelCreatingMethod.ForBaseEntity(entity);
             DefaultOnModelCreatingMethod.ForBaseRevisionEntity(entity);
         });

@@ -36,7 +36,7 @@ public class GetAllRevisionsHandler : IGetAllRevisionsHandler
             await _validator.ValidateAndThrowAsync(request.Key, cancellationToken);
             var key = Guid.Parse(request.Key);
             var revisions = await _manager.GetAllRevisionsAsync(key, cancellationToken);
-            return _mapper.Map<CurrencyListResponse>(revisions.Select(r => r.Currency));
+            return _mapper.Map<CurrencyListResponse>(revisions.Select(r => r.ToCurrencyResponse(_mapper)));
         }
         catch (ValidationException ex)
         {

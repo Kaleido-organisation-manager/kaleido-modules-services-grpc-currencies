@@ -35,9 +35,10 @@ public class CreateHandler : ICreateHandler
         {
             await _validator.ValidateAndThrowAsync(request, cancellationToken);
             var currency = _mapper.Map<CurrencyEntity>(request);
-            var result = await _createManager.CreateAsync(currency, cancellationToken);
+            var denominations = _mapper.Map<IEnumerable<DenominationEntity>>(request.Denominations.ToList());
+            var result = await _createManager.CreateAsync(currency, denominations, cancellationToken);
 
-            return _mapper.Map<CurrencyResponse>(result.Currency);
+            return result.ToCurrencyResponse(_mapper);
         }
         catch (ValidationException ex)
         {

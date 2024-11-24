@@ -9,7 +9,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Common.Configuration;
 
 public class CurrencyEntityDbContext : DbContext, IKaleidoDbContext<CurrencyEntity>
 {
-    public DbSet<CurrencyEntity> Items { get; set; }
+    public DbSet<CurrencyEntity> Items { get; set; } = null!;
 
     public CurrencyEntityDbContext(DbContextOptions<CurrencyEntityDbContext> options)
     : base(options)

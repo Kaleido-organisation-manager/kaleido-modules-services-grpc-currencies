@@ -56,6 +56,6 @@ public class GetRevisionHandler : IGetRevisionHandler
             throw new RpcException(new Status(StatusCode.NotFound, "Currency revision not found"));
         }
 
-        return _mapper.Map<CurrencyResponse>(result.Currency);
+        return result.ToCurrencyResponse(_mapper);
     }
 }

@@ -7,25 +7,44 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.GetAllFiltered;
 
 public class GetAllFilteredManager : IGetAllFilteredManager
 {
-    private readonly IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity> _lifeCycleHandler;
+    private readonly IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity> _currencyLifeCycleHandler;
+    private readonly IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity> _denominationLifeCycleHandler;
     private readonly ILogger<GetAllFilteredManager> _logger;
 
     public GetAllFilteredManager(
-        IEntityLifecycleHandler<CurrencyEntity, BaseRevisionEntity> repository,
+        IEntityLifecycleHandler<CurrencyEntity, CurrencyRevisionEntity> currencyLifeCycleHandler,
+        IEntityLifecycleHandler<DenominationEntity, DenominationRevisionEntity> denominationLifeCycleHandler,
         ILogger<GetAllFilteredManager> logger
         )
     {
-        _lifeCycleHandler = repository;
+        _currencyLifeCycleHandler = currencyLifeCycleHandler;
+        _denominationLifeCycleHandler = denominationLifeCycleHandler;
         _logger = logger;
     }
 
-    public async Task<IEnumerable<ManagerResponse>> GetAllByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ManagerResponse>> GetAllFilteredAsync(
+        string name,
+        CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Getting all currencies by name: {name}", name);
-        var matchingCurrencies = await _lifeCycleHandler.FindAllAsync(
-            (x) => x.Name.ToLower().Contains(name.ToLower()),
-            (x) => x.Action != RevisionAction.Deleted && x.Status == RevisionStatus.Active,
-            cancellationToken: cancellationToken);
-        return matchingCurrencies.Select(c => ManagerResponse.Success(c));
+        var currencies = await _currencyLifeCycleHandler.FindAllAsync(
+            currency => currency.Name.ToLower().Contains(name.ToLower()),
+            revision => revision.Status == RevisionStatus.Active && revision.Action != RevisionAction.Deleted,
+            cancellationToken: cancellationToken
+        );
+
+
+        var result = new List<ManagerResponse>();
+
+        foreach (var currency in currencies)
+        {
+            var denominations = await _denominationLifeCycleHandler.FindAllAsync(
+                d => d.CurrencyKey == currency.Key,
+                r => r.Status == RevisionStatus.Active && r.Action != RevisionAction.Deleted,
+                cancellationToken: cancellationToken
+            );
+            result.Add(ManagerResponse.Success(currency, denominations));
+        }
+
+        return result;
     }
 }

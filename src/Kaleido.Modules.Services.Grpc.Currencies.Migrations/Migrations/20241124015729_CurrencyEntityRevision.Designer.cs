@@ -3,6 +3,7 @@ using System;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 {
     [DbContext(typeof(CurrencyEntityRevisionDbContext))]
-    partial class CurrencyEntityRevisionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241124015729_CurrencyEntityRevision")]
+    partial class CurrencyEntityRevision
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

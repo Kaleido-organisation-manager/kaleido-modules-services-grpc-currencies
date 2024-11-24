@@ -28,7 +28,7 @@ public class GetAllHandler : IGetAllHandler
         try
         {
             var result = await _manager.GetAllAsync(cancellationToken);
-            return _mapper.Map<CurrencyListResponse>(result.Select(r => r.Currency));
+            return _mapper.Map<CurrencyListResponse>(result.Select(r => r.ToCurrencyResponse(_mapper)));
         }
         catch (Exception ex)
         {

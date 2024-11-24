@@ -31,11 +31,19 @@ if (string.IsNullOrEmpty(currenciesConnectionString))
     throw new ArgumentNullException(nameof(currenciesConnectionString), "No connection string found to connect to the currencies database");
 }
 
+// Currency
 builder.Services.AddKaleidoEntityDbContext<CurrencyEntity, CurrencyEntityDbContext>(currenciesConnectionString);
-builder.Services.AddKaleidoRevisionDbContext<BaseRevisionEntity, CurrencyEntityRevisionDbContext>(currenciesConnectionString);
+builder.Services.AddKaleidoRevisionDbContext<CurrencyRevisionEntity, CurrencyEntityRevisionDbContext>(currenciesConnectionString);
 builder.Services.AddEntityRepository<CurrencyEntity, CurrencyEntityDbContext>();
-builder.Services.AddRevisionRepository<CurrencyEntityRevisionDbContext>();
+builder.Services.AddRevisionRepository<CurrencyRevisionEntity, CurrencyEntityRevisionDbContext>();
 builder.Services.AddLifeCycleHandler<CurrencyEntity>();
+
+// Denomination
+builder.Services.AddKaleidoEntityDbContext<DenominationEntity, DenominationEntityDbContext>(currenciesConnectionString);
+builder.Services.AddKaleidoRevisionDbContext<DenominationRevisionEntity, DenominationEntityRevisionDbContext>(currenciesConnectionString);
+builder.Services.AddEntityRepository<DenominationEntity, DenominationEntityDbContext>();
+builder.Services.AddRevisionRepository<DenominationRevisionEntity, DenominationEntityRevisionDbContext>();
+builder.Services.AddLifeCycleHandler<DenominationEntity>();
 
 
 // Create

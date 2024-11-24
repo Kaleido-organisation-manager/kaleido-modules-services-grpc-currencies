@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 {
     /// <inheritdoc />
-    public partial class CurrencyEntityRevision : Migration
+    public partial class DenominationEntityRevision : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CurrencyRevisions",
+                name: "Denominations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -25,12 +25,12 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CurrencyRevisions", x => x.Id);
+                    table.PrimaryKey("PK_Denominations", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CurrencyRevisions_Key",
-                table: "CurrencyRevisions",
+                name: "IX_Denominations_Key",
+                table: "Denominations",
                 column: "Key");
         }
 
@@ -38,7 +38,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CurrencyRevisions");
+                name: "Denominations");
         }
     }
 }

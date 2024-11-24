@@ -39,7 +39,8 @@ public class DeleteHandler : IDeleteHandler
         try
         {
             await _validator.ValidateAndThrowAsync(request.Key, cancellationToken);
-            result = await _deleteManager.DeleteAsync(request.Key, cancellationToken);
+            var key = Guid.Parse(request.Key);
+            result = await _deleteManager.DeleteAsync(key, cancellationToken);
         }
         catch (ValidationException ex)
         {
@@ -58,6 +59,6 @@ public class DeleteHandler : IDeleteHandler
             throw new RpcException(new Status(StatusCode.NotFound, $"Could not find currency with key {request.Key}"));
         }
 
-        return _mapper.Map<CurrencyResponse>(result.Currency);
+        return result.ToCurrencyResponse(_mapper);
     }
 }

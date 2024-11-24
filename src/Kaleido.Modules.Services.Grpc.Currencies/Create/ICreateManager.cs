@@ -6,5 +6,5 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Create;
 
 public interface ICreateManager
 {
-    Task<ManagerResponse> CreateAsync(CurrencyEntity createCurrency, CancellationToken cancellationToken = default);
+    Task<ManagerResponse> CreateAsync(CurrencyEntity createCurrency, IEnumerable<DenominationEntity> denominations, CancellationToken cancellationToken = default);
 }

@@ -23,10 +23,19 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
             _mocker = new AutoMocker();
 
             var validRequest = new CurrencyRequestBuilder().Build();
-            var validCurrency = new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+            var validCurrency = new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
             {
                 Entity = new CurrencyEntityBuilder().Build(),
                 Revision = new CurrencyRevisionBuilder().Build()
+            };
+
+            var denominations = new List<EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>>()
+            {
+                new EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>
+                {
+                    Entity = new DenominationEntityBuilder().Build(),
+                    Revision = new DenominationRevisionBuilder().Build()
+                }
             };
 
             _mocker.Use(new KeyValidator());
@@ -39,8 +48,8 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
 
             // Happy path setup
             _mocker.GetMock<IGetManager>()
-                .Setup(m => m.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(ManagerResponse.Success(validCurrency));
+                .Setup(m => m.GetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(ManagerResponse.Success(validCurrency, denominations));
 
             _sut = _mocker.CreateInstance<GetHandler>();
         }
@@ -65,7 +74,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
             // Arrange
             var validRequest = new CurrencyRequestBuilder().Build();
             _mocker.GetMock<IGetManager>()
-                .Setup(m => m.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.GetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(ManagerResponse.NotFound());
 
             // Act & Assert
@@ -79,7 +88,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Get
             // Arrange
             var validRequest = new CurrencyRequestBuilder().Build();
             _mocker.GetMock<IGetManager>()
-                .Setup(m => m.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.GetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             // Act & Assert

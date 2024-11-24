@@ -9,6 +9,7 @@ using Kaleido.Modules.Services.Grpc.Currencies.Common.Validators;
 using AutoMapper;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Mappers;
 using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+using Kaleido.Common.Services.Grpc.Builders;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
 {
@@ -30,13 +31,21 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
             _mocker.Use(mapper.CreateMapper());
 
             _mocker.GetMock<IDeleteManager>()
-                .Setup(m => m.DeleteAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string key, CancellationToken ct) =>
+                .Setup(m => m.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Guid key, CancellationToken ct) =>
                     ManagerResponse.Success(
-                        new EntityLifeCycleResult<CurrencyEntity, BaseRevisionEntity>
+                        new EntityLifeCycleResult<CurrencyEntity, CurrencyRevisionEntity>
                         {
                             Entity = new CurrencyEntityBuilder().Build(),
-                            Revision = new CurrencyRevisionBuilder().WithKey(Guid.Parse(key)).Build()
+                            Revision = new CurrencyRevisionBuilder().WithKey(key).Build()
+                        },
+                        new List<EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>>
+                        {
+                            new EntityLifeCycleResult<DenominationEntity, DenominationRevisionEntity>
+                            {
+                            Entity = new DenominationEntityBuilder().Build(),
+                                Revision = new DenominationRevisionBuilder().WithKey(key).Build()
+                            }
                         }
                     ));
 
@@ -64,7 +73,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
             // Arrange
             var validRequest = new CurrencyRequestBuilder().Build();
             _mocker.GetMock<IDeleteManager>()
-                .Setup(m => m.DeleteAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(ManagerResponse.NotFound());
             // Act & Assert
             var exception = await Assert.ThrowsAsync<RpcException>(() => _sut.HandleAsync(validRequest));
@@ -77,7 +86,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Delete
             // Arrange
             var validRequest = new CurrencyRequestBuilder().Build();
             _mocker.GetMock<IDeleteManager>()
-                .Setup(m => m.DeleteAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(m => m.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             // Act & Assert

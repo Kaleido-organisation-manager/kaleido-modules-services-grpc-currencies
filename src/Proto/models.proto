@@ -8,6 +8,12 @@ message Currency {
     string name = 1;
     string code = 2;
     optional string symbol = 3;
+    repeated Denomination denominations = 4;
+}
+
+message Denomination {
+    float value = 1;
+    optional string description = 2;
 }
 
 message CurrencyRequest {
@@ -21,7 +27,7 @@ message CurrencyActionRequest {
 
 message EmptyRequest {}
 
-message CurrencyRevision {
+message BaseRevision {
     string key = 1;
     int32 revision = 2;
     string action = 3;
@@ -31,8 +37,21 @@ message CurrencyRevision {
 
 message CurrencyResponse {
     string key = 1;
-    Currency currency = 2;
-    CurrencyRevision revision = 3;
+    CurrencyWithDenominationsResponse currency = 2;
+    BaseRevision revision = 3;
+}
+
+message CurrencyWithDenominationsResponse {
+    string name = 1;
+    string code = 2;
+    optional string symbol = 3;
+    repeated DenominationResponse denominations = 4;
+}
+
+message DenominationResponse {
+    string key = 1;
+    Denomination denomination = 2;
+    BaseRevision revision = 3;
 }
 
 message CurrencyListResponse {

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 {
     [DbContext(typeof(CurrencyEntityDbContext))]
-    [Migration("20241123135322_CurrencyEntity")]
+    [Migration("20241124015727_CurrencyEntity")]
     partial class CurrencyEntity
     {
         /// <inheritdoc />

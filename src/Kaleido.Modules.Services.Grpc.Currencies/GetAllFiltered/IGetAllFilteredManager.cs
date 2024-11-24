@@ -6,5 +6,5 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.GetAllFiltered;
 
 public interface IGetAllFilteredManager
 {
-    Task<IEnumerable<ManagerResponse>> GetAllByNameAsync(string name, CancellationToken cancellationToken = default);
+    Task<IEnumerable<ManagerResponse>> GetAllFilteredAsync(string name, CancellationToken cancellationToken = default);
 }

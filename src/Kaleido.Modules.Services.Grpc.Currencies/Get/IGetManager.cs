@@ -6,5 +6,5 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Get;
 
 public interface IGetManager
 {
-    Task<ManagerResponse> GetAsync(string key, CancellationToken cancellationToken = default);
+    Task<ManagerResponse> GetAsync(Guid key, CancellationToken cancellationToken = default);
 }
