@@ -12,7 +12,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Denominations",
+                name: "DenominationRevisions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -25,12 +25,12 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Denominations", x => x.Id);
+                    table.PrimaryKey("PK_DenominationRevisions", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Denominations_Key",
-                table: "Denominations",
+                name: "IX_DenominationRevisions_Key",
+                table: "DenominationRevisions",
                 column: "Key");
         }
 
@@ -38,7 +38,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Denominations");
+                name: "DenominationRevisions");
         }
     }
 }

@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kaleido.Modules.Services.Grpc.Currencies\Kaleido.Modules.Services.Grpc.Currencies.csproj" />
-    <ProjectReference Include="..\Kaleido.Modules.Services.Grpc.Currencies.Tests.Common\Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

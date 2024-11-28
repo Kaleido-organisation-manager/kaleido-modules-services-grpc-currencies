@@ -1,6 +1,6 @@
 using Kaleido.Grpc.Currencies;
 
-namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations.Builders;
 
 public class GetAllCurrenciesFilteredRequestBuilder
 {

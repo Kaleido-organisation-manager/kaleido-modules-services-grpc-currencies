@@ -18,10 +18,10 @@ public class CurrencyEntityRevisionDbContext : DbContext, IKaleidoDbContext<Curr
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<BaseRevisionEntity>(entity =>
+        modelBuilder.Entity<CurrencyRevisionEntity>(entity =>
         {
             entity.ToTable("CurrencyRevisions");
-            DefaultOnModelCreatingMethod.ForBaseEntity(entity);
+
             DefaultOnModelCreatingMethod.ForBaseRevisionEntity(entity);
         });
     }

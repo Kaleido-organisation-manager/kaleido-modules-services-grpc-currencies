@@ -21,8 +21,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
                     Revision = table.Column<int>(type: "int", nullable: false),
                     Action = table.Column<string>(type: "varchar(8)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
-                    Discriminator = table.Column<string>(type: "character varying(34)", maxLength: 34, nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

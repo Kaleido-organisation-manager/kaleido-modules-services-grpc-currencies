@@ -3,7 +3,7 @@ using Moq.AutoMock;
 using Kaleido.Modules.Services.Grpc.Currencies.Get;
 using Kaleido.Common.Services.Grpc.Handlers.Interfaces;
 using Kaleido.Common.Services.Grpc.Models;
-using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+using Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Builders;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Constants;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Models;
 using System.Linq.Expressions;

@@ -40,10 +40,12 @@ public class UpdateHandler : IUpdateHandler
         try
         {
             await _keyValidator.ValidateAndThrowAsync(request.Key, cancellationToken);
+            var key = Guid.Parse(request.Key);
             await _currencyValidator.ValidateAndThrowAsync(request.Currency, cancellationToken);
             var currency = _mapper.Map<CurrencyEntity>(request.Currency);
             var denominations = _mapper.Map<IEnumerable<DenominationEntity>>(request.Currency.Denominations);
-            updateResult = await _updateManager.UpdateAsync(Guid.Parse(request.Key), currency, denominations, cancellationToken);
+            denominations.ToList().ForEach(d => d.CurrencyKey = key);
+            updateResult = await _updateManager.UpdateAsync(key, currency, denominations, cancellationToken);
         }
         catch (ValidationException ex)
         {

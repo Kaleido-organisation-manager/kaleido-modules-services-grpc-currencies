@@ -7,7 +7,7 @@ using Kaleido.Common.Services.Grpc.Models;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Models;
 using AutoMapper;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Mappers;
-using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+using Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Builders;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAll
 {

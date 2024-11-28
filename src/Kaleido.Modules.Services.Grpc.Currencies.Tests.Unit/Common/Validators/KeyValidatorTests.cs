@@ -1,5 +1,4 @@
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Validators;
-using Xunit;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Common.Validators;
 

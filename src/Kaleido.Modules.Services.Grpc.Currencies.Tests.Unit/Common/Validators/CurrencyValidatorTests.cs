@@ -1,8 +1,8 @@
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Validators;
 using FluentValidation.TestHelper;
-using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+using Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Builders;
 
-namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Common.Validators
+namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Validators
 {
     public class CurrencyValidatorTests
     {

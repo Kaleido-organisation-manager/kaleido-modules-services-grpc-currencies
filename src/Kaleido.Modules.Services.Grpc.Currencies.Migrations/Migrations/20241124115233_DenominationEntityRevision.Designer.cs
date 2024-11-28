@@ -11,9 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 {
-    [DbContext(typeof(DenominationEntityDbContext))]
-    [Migration("20241124015730_DenominationEntity")]
-    partial class DenominationEntity
+    [DbContext(typeof(DenominationEntityRevisionDbContext))]
+    [Migration("20241124115233_DenominationEntityRevision")]
+    partial class DenominationEntityRevision
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,25 +25,37 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Kaleido.Modules.Services.Grpc.Currencies.Common.Models.DenominationEntity", b =>
+            modelBuilder.Entity("Kaleido.Modules.Services.Grpc.Currencies.Common.Models.DenominationRevisionEntity", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CurrencyKey")
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("varchar(8)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("EntityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Key")
                         .IsRequired()
                         .HasColumnType("varchar(36)");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)");
+                    b.Property<int>("Revision")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18, 2)");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Denominations", (string)null);
+                    b.HasIndex("Key");
+
+                    b.ToTable("DenominationRevisions", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -11,9 +11,9 @@ using Kaleido.Modules.Services.Grpc.Currencies.GetAllFiltered;
 using Kaleido.Modules.Services.Grpc.Currencies.GetAllRevisions;
 using Kaleido.Modules.Services.Grpc.Currencies.GetRevision;
 using Kaleido.Modules.Services.Grpc.Currencies.Update;
-using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+using Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Builders;
 
-namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Common.Services;
+namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Services;
 
 public class CurrencyServiceTests
 {

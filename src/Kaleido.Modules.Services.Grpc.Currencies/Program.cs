@@ -36,14 +36,14 @@ builder.Services.AddKaleidoEntityDbContext<CurrencyEntity, CurrencyEntityDbConte
 builder.Services.AddKaleidoRevisionDbContext<CurrencyRevisionEntity, CurrencyEntityRevisionDbContext>(currenciesConnectionString);
 builder.Services.AddEntityRepository<CurrencyEntity, CurrencyEntityDbContext>();
 builder.Services.AddRevisionRepository<CurrencyRevisionEntity, CurrencyEntityRevisionDbContext>();
-builder.Services.AddLifeCycleHandler<CurrencyEntity>();
+builder.Services.AddLifeCycleHandler<CurrencyEntity, CurrencyRevisionEntity>();
 
 // Denomination
 builder.Services.AddKaleidoEntityDbContext<DenominationEntity, DenominationEntityDbContext>(currenciesConnectionString);
 builder.Services.AddKaleidoRevisionDbContext<DenominationRevisionEntity, DenominationEntityRevisionDbContext>(currenciesConnectionString);
 builder.Services.AddEntityRepository<DenominationEntity, DenominationEntityDbContext>();
 builder.Services.AddRevisionRepository<DenominationRevisionEntity, DenominationEntityRevisionDbContext>();
-builder.Services.AddLifeCycleHandler<DenominationEntity>();
+builder.Services.AddLifeCycleHandler<DenominationEntity, DenominationRevisionEntity>();
 
 
 // Create

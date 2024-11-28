@@ -1,7 +1,7 @@
 using Google.Protobuf.WellKnownTypes;
 using Kaleido.Grpc.Currencies;
 
-namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Builders;
 
 public class GetCurrencyRevisionRequestBuilder
 {

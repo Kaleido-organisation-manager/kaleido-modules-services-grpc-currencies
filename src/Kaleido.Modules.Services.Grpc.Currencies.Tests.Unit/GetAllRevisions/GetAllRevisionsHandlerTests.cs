@@ -1,16 +1,14 @@
 using Moq;
 using Moq.AutoMock;
 using Grpc.Core;
-using Kaleido.Common.Services.Grpc.Models.Validations;
 using Kaleido.Grpc.Currencies;
 using Kaleido.Modules.Services.Grpc.Currencies.GetAllRevisions;
-using Kaleido.Common.Services.Grpc.Exceptions;
 using Kaleido.Common.Services.Grpc.Models;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Models;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Validators;
 using AutoMapper;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Mappers;
-using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+using Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Builders;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAllRevisions
 {

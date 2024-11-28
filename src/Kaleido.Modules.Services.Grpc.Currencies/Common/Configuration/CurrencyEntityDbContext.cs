@@ -21,10 +21,12 @@ public class CurrencyEntityDbContext : DbContext, IKaleidoDbContext<CurrencyEnti
 
         modelBuilder.Entity<CurrencyEntity>(entity =>
         {
+            entity.ToTable("Currencies");
+
             entity.Property(c => c.Name).IsRequired().HasColumnType("varchar(100)");
             entity.Property(c => c.Code).IsRequired().HasColumnType("varchar(3)");
             entity.Property(c => c.Symbol).HasColumnType("varchar(10)");
-            entity.ToTable("Currencies");
+
             DefaultOnModelCreatingMethod.ForBaseEntity(entity);
         });
     }

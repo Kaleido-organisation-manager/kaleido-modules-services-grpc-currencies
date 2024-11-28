@@ -25,6 +25,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
             modelBuilder.Entity("Kaleido.Modules.Services.Grpc.Currencies.Common.Models.DenominationRevisionEntity", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Action")
@@ -51,7 +52,7 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 
                     b.HasIndex("Key");
 
-                    b.ToTable("Denominations", (string)null);
+                    b.ToTable("DenominationRevisions", (string)null);
                 });
 #pragma warning restore 612, 618
         }

@@ -5,7 +5,7 @@ using Kaleido.Modules.Services.Grpc.Currencies.Common.Models;
 using Kaleido.Common.Services.Grpc.Models;
 using Kaleido.Common.Services.Grpc.Handlers.Interfaces;
 using System.Linq.Expressions;
-using Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.Builders;
+using Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.Builders;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.GetAllFiltered
 {

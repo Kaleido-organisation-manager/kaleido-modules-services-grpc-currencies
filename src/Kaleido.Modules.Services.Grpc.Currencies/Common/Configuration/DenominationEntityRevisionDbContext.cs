@@ -19,8 +19,8 @@ public class DenominationEntityRevisionDbContext : DbContext, IKaleidoDbContext<
 
         modelBuilder.Entity<DenominationRevisionEntity>(entity =>
         {
-            entity.ToTable("Denominations");
-            DefaultOnModelCreatingMethod.ForBaseEntity(entity);
+            entity.ToTable("DenominationRevisions");
+
             DefaultOnModelCreatingMethod.ForBaseRevisionEntity(entity);
         });
     }

@@ -45,6 +45,7 @@ public class GetManager : IGetManager
         );
 
         _logger.LogInformation("Currency with key: {Key} and its denominations have been successfully retrieved.", key);
+        _logger.LogInformation("Resolved {DenominationsCount} denominations for currency with key: {Key}", denominations.Count(), key);
 
         return ManagerResponse.Success(currency, denominations);
     }

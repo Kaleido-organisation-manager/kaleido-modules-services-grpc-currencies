@@ -4,6 +4,7 @@ using Kaleido.Common.Services.Grpc.Exceptions;
 using Kaleido.Common.Services.Grpc.Handlers.Interfaces;
 using Kaleido.Common.Services.Grpc.Models;
 using Kaleido.Modules.Services.Grpc.Currencies.Common.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Kaleido.Modules.Services.Grpc.Currencies.Update;
 
@@ -34,6 +35,8 @@ public class UpdateManager : IUpdateManager
         IEnumerable<DenominationEntity> denominations,
         CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation("Starting UpdateAsync with key: {Key}", key);
+
         var timestamp = DateTime.UtcNow;
 
         var currencyRevision = new CurrencyRevisionEntity
@@ -46,18 +49,22 @@ public class UpdateManager : IUpdateManager
         try
         {
             currencyResult = await _lifeCycleHandler.UpdateAsync(key, currency, currencyRevision, cancellationToken);
+            _logger.LogInformation("Currency update successful for key: {Key}", key);
         }
         catch (NotModifiedException)
         {
+            _logger.LogInformation("Currency update not modified for key: {Key}", key);
             currencyResult = await _lifeCycleHandler.GetAsync(key, cancellationToken: cancellationToken);
         }
         catch (Exception ex) when (ex is RevisionNotFoundException or EntityNotFoundException)
         {
+            _logger.LogError(ex, "Currency or revision not found for key: {Key}", key);
             return ManagerResponse.NotFound();
         }
 
         if (currencyResult == null)
         {
+            _logger.LogError("Currency result is null for key: {Key}", key);
             return ManagerResponse.NotFound();
         }
 
@@ -91,6 +98,7 @@ public class UpdateManager : IUpdateManager
         var denominationsToUpdate = denominations.Where(x =>
             activeDenominations.Any(y =>
                 y.Entity.Value == x.Value &&
+                !y.Entity.Equals(x) &&
                 y.Revision.Action != RevisionAction.Deleted))
             .Select(x =>
             {
@@ -124,6 +132,7 @@ public class UpdateManager : IUpdateManager
 
             var denominationResult = await _denominationLifeCycleHandler.DeleteAsync(denomination.Key, denominationRevisionEntity, cancellationToken);
             updatedDenominations.Add(denominationResult);
+            _logger.LogInformation("Deleted denomination with key: {Key}", denomination.Key);
         }
 
         // Create prices
@@ -138,6 +147,7 @@ public class UpdateManager : IUpdateManager
 
             var denominationResult = await _denominationLifeCycleHandler.CreateAsync(denomination, denominationRevisionEntity, cancellationToken);
             updatedDenominations.Add(denominationResult);
+            _logger.LogInformation("Created denomination with value: {Value}", denomination.Value);
         }
 
         // Restore prices
@@ -151,6 +161,7 @@ public class UpdateManager : IUpdateManager
 
             var denominationResult = await _denominationLifeCycleHandler.RestoreAsync(denomination.Key, denominationRevisionEntity, cancellationToken);
             updatedDenominations.Add(denominationResult);
+            _logger.LogInformation("Restored denomination with key: {Key}", denomination.Key);
         }
 
         // Update prices
@@ -164,6 +175,7 @@ public class UpdateManager : IUpdateManager
 
             var denominationResult = await _denominationLifeCycleHandler.UpdateAsync(denomination.Key, denomination.Entity, denominationRevisionEntity, cancellationToken);
             updatedDenominations.Add(denominationResult);
+            _logger.LogInformation("Updated denomination with key: {Key}", denomination.Key);
         }
 
         // Update the unchanged prices

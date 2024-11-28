@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Gr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Migrations", "Kaleido.Modules.Services.Grpc.Currencies.Migrations\Kaleido.Modules.Services.Grpc.Currencies.Migrations.csproj", "{EE8EF93A-587E-45E5-9A44-4D800936DBE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Tests.Common", "Kaleido.Modules.Services.Grpc.Currencies.Tests.Common\Kaleido.Modules.Services.Grpc.Currencies.Tests.Common.csproj", "{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations", "Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations\Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations.csproj", "{EF73E923-5C28-4049-9517-78022E6AAEDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit", "Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit\Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit.csproj", "{4CCEA6E4-2357-4E86-9884-94782A33CA8A}"
@@ -36,10 +34,6 @@ Global
 		{EE8EF93A-587E-45E5-9A44-4D800936DBE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE8EF93A-587E-45E5-9A44-4D800936DBE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE8EF93A-587E-45E5-9A44-4D800936DBE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA6C66DF-663A-4E55-A4AA-80FFD9EEEF59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF73E923-5C28-4049-9517-78022E6AAEDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF73E923-5C28-4049-9517-78022E6AAEDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF73E923-5C28-4049-9517-78022E6AAEDB}.Release|Any CPU.ActiveCfg = Release|Any CPU

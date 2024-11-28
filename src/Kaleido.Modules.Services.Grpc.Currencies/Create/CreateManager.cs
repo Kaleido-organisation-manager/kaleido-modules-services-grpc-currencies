@@ -43,6 +43,7 @@ public class CreateManager : ICreateManager
                 Key = Guid.NewGuid(),
                 CreatedAt = timestamp
             };
+            denomination.CurrencyKey = currencyResult.Key;
 
             var denominationResult = await _denominationLifeCycleHandler.CreateAsync(denomination, denominationRevision, cancellationToken: cancellationToken);
             storedDenominations.Add(denominationResult);

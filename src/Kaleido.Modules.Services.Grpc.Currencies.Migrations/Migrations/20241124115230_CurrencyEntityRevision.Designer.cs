@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 {
     [DbContext(typeof(CurrencyEntityRevisionDbContext))]
-    [Migration("20241124015729_CurrencyEntityRevision")]
+    [Migration("20241124115230_CurrencyEntityRevision")]
     partial class CurrencyEntityRevision
     {
         /// <inheritdoc />
@@ -25,9 +25,10 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Kaleido.Common.Services.Grpc.Models.BaseRevisionEntity", b =>
+            modelBuilder.Entity("Kaleido.Modules.Services.Grpc.Currencies.Common.Models.CurrencyRevisionEntity", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Action")
@@ -36,11 +37,6 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(34)
-                        .HasColumnType("character varying(34)");
 
                     b.Property<Guid>("EntityId")
                         .HasColumnType("uuid");
@@ -60,17 +56,6 @@ namespace Kaleido.Modules.Services.Grpc.Currencies.Migrations.Migrations
                     b.HasIndex("Key");
 
                     b.ToTable("CurrencyRevisions", (string)null);
-
-                    b.HasDiscriminator().HasValue("BaseRevisionEntity");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Kaleido.Modules.Services.Grpc.Currencies.Common.Models.CurrencyRevisionEntity", b =>
-                {
-                    b.HasBaseType("Kaleido.Common.Services.Grpc.Models.BaseRevisionEntity");
-
-                    b.HasDiscriminator().HasValue("CurrencyRevisionEntity");
                 });
 #pragma warning restore 612, 618
         }
