@@ -1,0 +1,179 @@
+name: CI Pipeline on Pull Request
+
+'on': pull_request
+
+jobs:
+  gitversion:
+    name: GitVersion
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.Semver.outputs.MajorMinorPatch }}
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+        with:
+          fetch-depth: 0
+      - uses: gittools/actions/gitversion/setup@v3.0.0
+      - id: Semver
+        uses: gittools/actions/gitversion/execute@v3.0.0
+
+  build-currencies-service:
+    name: Build Currencies Service
+    needs: gitversion
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+      - name: Add Github nugetfeed
+        run: dotnet nuget add source --username DriesDelanghe --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Kaleido-organisation-manager/index.json"
+      - name: Restore dependencies of currencies service
+        run: dotnet restore 
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies
+      - name: Build currencies service
+        run: dotnet build
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies
+
+  build-currencies-service-migrations:
+    name: Build Currencies Service Migrations
+    needs: gitversion
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+      - name: Add Github nugetfeed
+        run: dotnet nuget add source --username DriesDelanghe --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Kaleido-organisation-manager/index.json"
+      - name: Restore dependencies of currencies service migrations
+        run: dotnet restore
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Migrations
+      - name: Build currencies service migrations
+        run: dotnet build
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Migrations
+
+  build-currencies-service-client:
+    name: Build Currencies Service Client
+    needs: gitversion
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+      - name: Add Github nugetfeed
+        run: dotnet nuget add source --username DriesDelanghe --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Kaleido-organisation-manager/index.json"
+      - name: Restore dependencies of currencies service client
+        run: dotnet restore
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Client
+      - name: Build currencies service client
+        run: dotnet build
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Client
+
+  unit-tests:
+    name: Run Unit Tests
+    needs: [build-currencies-service, build-currencies-service-migrations, build-currencies-service-client]
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+      - name: Add Github nugetfeed
+        run: dotnet nuget add source --username DriesDelanghe --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Kaleido-organisation-manager/index.json"
+      - name: Restore dependencies of unit tests
+        run: dotnet restore
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit
+      - name: Run unit tests
+        run: dotnet test
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Tests.Unit
+
+  create-service-release:
+    name: Create Dotnet Release for service
+    needs: [build-currencies-service, build-currencies-service-migrations, build-currencies-service-client, gitversion]
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+      - name: Add Github nugetfeed
+        run: dotnet nuget add source --username DriesDelanghe --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Kaleido-organisation-manager/index.json"
+      - name: Restore dependencies of service
+        run: dotnet restore
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies
+      - name: Build service Release
+        run: dotnet build -c Release
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies
+      - name: Upload Dotnet Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: currencies-service
+          path: src/Kaleido.Modules.Services.Grpc.Currencies/bin/Release/net8.0
+
+  create-migrations-release:
+    name: Create Dotnet Release for migrations
+    needs: [build-currencies-service, build-currencies-service-migrations, build-currencies-service-client, gitversion]
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+      - name: Add Github nugetfeed
+        run: dotnet nuget add source --username DriesDelanghe --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Kaleido-organisation-manager/index.json"
+      - name: Restore dependencies of migrations
+        run: dotnet restore
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Migrations
+      - name: Build migrations
+        run: dotnet build -c Release
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Migrations
+      - name: Upload Dotnet Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: currencies-service-migrations
+          path: src/Kaleido.Modules.Services.Grpc.Currencies.Migrations/bin/Release/net8.0
+
+  integration-tests:
+    name: Run Integration Tests
+    needs: [create-service-release, create-migrations-release, gitversion]
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout Repository
+      - name: Add Github nugetfeed
+        run: dotnet nuget add source --username DriesDelanghe --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Kaleido-organisation-manager/index.json"
+      - name: Restore dependencies of integration tests
+        run: dotnet restore
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations
+      - name: Download Service Release Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: currencies-service
+          path: service/out
+      - name: Download Migrations Release Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: currencies-service-migrations
+          path: migrations/out
+      - name: Build Currencies Service Docker Image
+        run: docker build . -f dockerfiles/Grpc.Currencies/Dockerfile.cicd -t kaleido-modules-services-grpc-currencies:${{ needs.gitversion.outputs.version }} --build-arg RELEASE_DIR=service/out
+      - name: Build Currencies Migrations Docker Image
+        run: docker build . -f dockerfiles/Grpc.Currencies.Migrations/Dockerfile.cicd -t kaleido-modules-services-grpc-currencies-migrations:${{ needs.gitversion.outputs.version }} --build-arg RELEASE_DIR=migrations/out
+      - name: Run integration tests
+        run: dotnet test
+        working-directory: src/Kaleido.Modules.Services.Grpc.Currencies.Tests.Integrations
+        env:
+          CURRENCIES_IMAGE_NAME: kaleido-modules-services-grpc-currencies:${{ needs.gitversion.outputs.version }}
+          MIGRATIONS_IMAGE_NAME: kaleido-modules-services-grpc-currencies-migrations:${{ needs.gitversion.outputs.version }}
+          CI: true
